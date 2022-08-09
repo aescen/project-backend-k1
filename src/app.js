@@ -3,7 +3,7 @@ require('dotenv').config();
 // -- imports
 const express = require('express');
 const sequelize = require('./config/dbConnection');
-const { UsersModel } = require('./models');
+const Models = require('./models');
 const routerRoutes = require('./routes');
 
 // -- consts
@@ -29,7 +29,12 @@ const errorHandler = (err, req, res, next) => {
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
-    await UsersModel.sync({ alter: true });
+    await Models.RolesModel.sync({ alter: true });
+    await Models.UsersModel.sync({ alter: true });
+    await Models.KodeKotaModel.sync({ alter: true });
+    await Models.GudangModel.sync({ alter: true });
+    await Models.BarangModel.sync({ alter: true });
+    await Models.PengirimanModel.sync({ alter: true });
     console.log('DB setup done.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

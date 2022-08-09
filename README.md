@@ -166,13 +166,13 @@
 
    - Request:
 
-     - Path: `/shipments`
+     - Path: `/shipments/{resi}`
      - Method: `PUT`
      - Body:
 
        ```json
        {
-         "idBarang": string,
+         "resi": string,
          "idGudang": string,
        }
        ```
@@ -188,7 +188,7 @@
          "data": {
            "gudang": [
              {
-               "idGudang": string,
+               "resi": string,
                "waktu": datetime,
                "kurir": string
              }
@@ -201,7 +201,7 @@
 
    - Request:
 
-     - Path: `/shipments`
+     - Path: `/shipments/{resi}`
      - Method: `PUT`
      - Body:
 
@@ -222,7 +222,7 @@
        {
          "status": "success",
          "data": {
-           "idBarang": string,
+           "resi": string,
            "statusPengiriman": string,
            "namaPenerima": string
          }

@@ -1,37 +1,39 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/dbConnection');
-const RolesModel = require('../roles');
+const UsersModel = require('../users');
+const KodeKotaModel = require('../kodekota');
 
-const UsersModel = sequelize.define(
-  'users',
+const GudangModel = sequelize.define(
+  'gudang',
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
     },
+    idAdmin: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      references: {
+        model: UsersModel,
+        key: 'id',
+      },
+      onDelete: 'RESTRICT',
+      onUpdate: 'CASCADE',
+    },
     nama: {
       type: DataTypes.STRING(64),
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING(64),
-      allowNull: false,
-      unique: true,
-    },
-    password: {
-      type: DataTypes.TEXT,
+    alamat: {
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
-    no_hp: {
-      type: DataTypes.STRING(64),
-      allowNull: false,
-    },
-    idRole: {
+    idKodeKota: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: true,
       references: {
-        model: RolesModel,
+        model: KodeKotaModel,
         key: 'id',
       },
       onDelete: 'RESTRICT',
@@ -45,4 +47,4 @@ const UsersModel = sequelize.define(
   },
 );
 
-module.exports = UsersModel;
+module.exports = GudangModel;

@@ -1,5 +1,3 @@
 const UsersModel = require('./users');
 
-module.exports = {
-  UsersModel,
-};
+module.exports = { UsersModel };

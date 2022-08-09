@@ -1,25 +1,29 @@
-const express = require('express');
+const express = require("express");
 
 const routes = express.Router();
 
-const usersRoutes = require('./users');
+const usersRoutes = require("./users");
+const loginRoutes = require("./login");
+const shipmentsRoutes = require("./shipments");
 
-routes.use('/users', usersRoutes);
+routes.use("/users", usersRoutes);
+routes.use("/login", loginRoutes);
+routes.use("/shipments", shipmentsRoutes);
 
-routes.get('/', (req, res) => {
-  const mType = req.get('Content-Type');
+routes.get("/", (req, res) => {
+  const mType = req.get("Content-Type");
 
-  if (mType === 'application/json') {
+  if (mType === "application/json") {
     res.json({
-      title: 'ExpressJS',
-      message: 'Latihan Sequelize ExpressJS',
+      title: "ExpressJS",
+      message: "Latihan Sequelize ExpressJS",
     });
     return;
   }
 
-  res.render('index', {
-    title: 'ExpressJS',
-    message: 'Latihan Sequelize ExpressJS',
+  res.render("index", {
+    title: "ExpressJS",
+    message: "Latihan Sequelize ExpressJS",
   });
 });
 

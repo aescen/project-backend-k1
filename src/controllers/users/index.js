@@ -2,7 +2,9 @@ const { UsersModel } = require('../../models');
 
 module.exports = {
   addUser: async (req, res) => {
-    const { username, name, email, birthDate } = req.body;
+    const {
+      username, name, email, birthDate,
+    } = req.body;
 
     const userFound = await UsersModel.findOne({
       where: {
@@ -72,7 +74,9 @@ module.exports = {
   },
   updateUserById: async (req, res) => {
     const { id: userId } = req.params;
-    const { username, name, email, birthDate } = req.body;
+    const {
+      username, name, email, birthDate,
+    } = req.body;
     const updatedAt = new Date();
     const updatedUserRow = await UsersModel.update(
       {

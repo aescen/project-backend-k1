@@ -1,5 +1,6 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/dbConnection');
+const RolesModel = require('../roles');
 
 const UsersModel = sequelize.define(
   'users',
@@ -9,36 +10,47 @@ const UsersModel = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    name: {
-      type: DataTypes.STRING,
+    nama: {
+      type: DataTypes.STRING(64),
       allowNull: false,
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       allowNull: false,
     },
-    birthDate: DataTypes.DATEONLY,
-    createdAt: {
-      type: DataTypes.DATE,
+    password: {
+      type: DataTypes.TEXT,
       allowNull: false,
-      defaultValue: Sequelize.literal('NOW()'),
     },
-    updatedAt: {
-      type: DataTypes.DATE,
+    noHp: {
+      type: DataTypes.STRING(64),
       allowNull: false,
-      defaultValue: Sequelize.literal('NOW()'),
+    },
+    idRole: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      references: {
+        model: RolesModel,
+        key: 'id',
+      },
+      onDelete: 'RESTRICT',
+      onUpdate: 'CASCADE',
     },
   },
   {
     freezeTableName: true,
     timestamps: false,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['email'],
+      },
+    ],
   },
 );
+
+RolesModel.hasMany(UsersModel, { foreignKey: 'id' });
+UsersModel.belongsTo(RolesModel, { foreignKey: 'idRole' });
 
 module.exports = UsersModel;

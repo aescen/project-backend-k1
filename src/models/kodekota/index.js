@@ -12,7 +12,6 @@ const KodeKotaModel = sequelize.define(
     kode: {
       type: DataTypes.STRING(64),
       allowNull: false,
-      unique: true,
     },
     nama: {
       type: DataTypes.STRING(64),
@@ -23,6 +22,12 @@ const KodeKotaModel = sequelize.define(
     freezeTableName: true,
     timestamps: false,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['kode'],
+      },
+    ],
   },
 );
 

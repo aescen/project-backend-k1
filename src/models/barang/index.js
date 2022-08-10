@@ -22,7 +22,6 @@ const BarangModel = sequelize.define(
     resi: {
       type: DataTypes.STRING(64),
       allowNull: false,
-      unique: true,
     },
     namaBarang: {
       type: DataTypes.STRING(64),
@@ -79,7 +78,16 @@ const BarangModel = sequelize.define(
     freezeTableName: true,
     timestamps: false,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['resi'],
+      },
+    ],
   },
 );
+
+UsersModel.hasMany(BarangModel, { foreignKey: 'id' });
+BarangModel.belongsTo(UsersModel, { foreignKey: 'idAdmin' });
 
 module.exports = BarangModel;

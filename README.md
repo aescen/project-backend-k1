@@ -245,8 +245,8 @@
            "resi": string,
            "lokasi": [
              {
+               "keterangan": string,
                "waktu": datetime,
-               "kurir": string
              }
            ]
          }

@@ -47,4 +47,10 @@ const GudangModel = sequelize.define(
   },
 );
 
+UsersModel.hasMany(GudangModel, { foreignKey: 'id' });
+GudangModel.belongsTo(UsersModel, { foreignKey: 'idAdmin' });
+
+KodeKotaModel.hasMany(GudangModel, { foreignKey: 'id' });
+GudangModel.belongsTo(KodeKotaModel, { foreignKey: 'idKodeKota' });
+
 module.exports = GudangModel;

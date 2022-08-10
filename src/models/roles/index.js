@@ -12,13 +12,18 @@ const RolesModel = sequelize.define(
     role: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
   },
   {
     freezeTableName: true,
     timestamps: false,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['role'],
+      },
+    ],
   },
 );
 

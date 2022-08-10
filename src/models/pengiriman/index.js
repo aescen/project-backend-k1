@@ -58,4 +58,13 @@ const PengirimanModel = sequelize.define(
   },
 );
 
+BarangModel.hasMany(PengirimanModel, { foreignKey: 'id' });
+PengirimanModel.belongsTo(BarangModel, { foreignKey: 'idBarang' });
+
+GudangModel.hasMany(PengirimanModel, { foreignKey: 'id' });
+PengirimanModel.belongsTo(GudangModel, { foreignKey: 'idGudang' });
+
+UsersModel.hasMany(PengirimanModel, { foreignKey: 'id' });
+PengirimanModel.belongsTo(UsersModel, { foreignKey: 'idKurir' });
+
 module.exports = PengirimanModel;

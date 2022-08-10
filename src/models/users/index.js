@@ -17,13 +17,12 @@ const UsersModel = sequelize.define(
     email: {
       type: DataTypes.STRING(64),
       allowNull: false,
-      unique: true,
     },
     password: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    no_hp: {
+    noHp: {
       type: DataTypes.STRING(64),
       allowNull: false,
     },
@@ -42,7 +41,16 @@ const UsersModel = sequelize.define(
     freezeTableName: true,
     timestamps: false,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['email'],
+      },
+    ],
   },
 );
+
+RolesModel.hasMany(UsersModel, { foreignKey: 'id' });
+UsersModel.belongsTo(RolesModel, { foreignKey: 'idRole' });
 
 module.exports = UsersModel;

@@ -16,7 +16,11 @@ module.exports = {
     }
 
     const {
-      nama, email, password, noHp, role,
+      nama,
+      email,
+      password,
+      noHp,
+      role,
     } = req.body;
 
     const roles = await RolesModel.findAll({
@@ -32,6 +36,7 @@ module.exports = {
     if (!userRole) {
       res.status(400);
       res.json({
+        status: 'error',
         message: 'Role tidak diketahui.',
       });
       return;
@@ -50,6 +55,7 @@ module.exports = {
     if (userFound !== null) {
       res.status(400);
       res.json({
+        status: 'error',
         message: 'Username sudah ada.',
       });
       return;
@@ -135,6 +141,7 @@ module.exports = {
     if (userFound === null) {
       res.status(404);
       res.json({
+        status: 'error',
         message: 'User tidak terdaftar.',
       });
       return;
@@ -172,6 +179,7 @@ module.exports = {
     if (!userRole) {
       res.status(400);
       res.json({
+        status: 'error',
         message: 'Role tidak diketahui.',
       });
       return;
@@ -201,6 +209,7 @@ module.exports = {
     if (updatedUserRow[0] === 0) {
       res.status(404);
       res.json({
+        status: 'error',
         message: 'User tidak terdaftar.',
       });
       return;
@@ -232,6 +241,7 @@ module.exports = {
     if (!deletedUserRow) {
       res.status(404);
       res.json({
+        status: 'error',
         message: 'User tidak terdaftar.',
       });
       return;

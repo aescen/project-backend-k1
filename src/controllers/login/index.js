@@ -9,6 +9,7 @@ module.exports = {
     if (!email || !password) {
       res.status(400);
       res.json({
+        status: 'error',
         message: 'Gagal login, data tidak lengkap.',
       });
       return;
@@ -34,6 +35,7 @@ module.exports = {
     if (!userFound || !passwordMatch) {
       res.status(400);
       res.json({
+        status: 'error',
         message: 'Gagal login, email atau password salah.',
       });
       return;

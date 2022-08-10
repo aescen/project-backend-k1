@@ -16,11 +16,11 @@
 
    - request body: nama, berat, pengirim, penerima
 
-4. Mengupdate lokasi gudang barang pengiriman (protected as admin) `/shipments/{resi}`
+4. Mengupdate lokasi gudang barang pengiriman (protected as admin) `/shipments/gudang/{resi}`
 
    - request body: resi, nama gudang, keterangan
 
-5. Mengupdate status pengiriman (protected as kurir): `/shipments/{resi}`
+5. Mengupdate status pengiriman (protected as kurir): `/shipments/kurir/{resi}`
 
    - request body: resi, nama penerima, status pengiriman
 
@@ -200,13 +200,13 @@
 
    - Request:
 
-     - Path: `/shipments/{resi}`
+     - Path: `/shipments/kurir/{resi}`
      - Method: `PUT`
      - Body:
 
        ```json
        {
-         "statusPengiriman": string,
+         "keterangan": string,
        }
        ```
 
@@ -220,7 +220,8 @@
          "status": "success",
          "data": {
            "resi": string,
-           "statusPengiriman": string,
+           "keterangan": string,
+           "waktu": string,
          }
        }
        ```

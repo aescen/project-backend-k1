@@ -16,11 +16,7 @@ module.exports = {
     }
 
     const {
-      nama,
-      email,
-      password,
-      noHp,
-      role,
+      nama, email, password, noHp, role,
     } = req.body;
 
     const roles = await RolesModel.findAll({

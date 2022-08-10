@@ -1,4 +1,6 @@
 const express = require('express');
+const { verifyJWT } = require('../common');
+const { shipments } = require('../../controllers');
 
 const shipmentsRoutes = express.Router();
 
@@ -7,15 +9,7 @@ shipmentsRoutes.post('/', (req, res) => {
     message: 'test',
   });
 });
-shipmentsRoutes.get('/', (req, res) => {
-  res.json({
-    message: 'test get',
-  });
-});
-shipmentsRoutes.put('/:id', (req, res) => {
-  res.json({
-    message: 'test put',
-  });
-});
+shipmentsRoutes.get('/:resi', shipments.getPengiriman);
+shipmentsRoutes.put('/gudang/:resi', verifyJWT, shipments.updatePengirimanGudang);
 
 module.exports = shipmentsRoutes;

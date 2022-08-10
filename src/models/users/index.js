@@ -1,26 +1,56 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../../config/dbConnection');
+const RolesModel = require('../roles');
 
-const UsersSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    require: true,
+const UsersModel = sequelize.define(
+  'users',
+  {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    nama: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    noHp: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+    },
+    idRole: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      references: {
+        model: RolesModel,
+        key: 'id',
+      },
+      onDelete: 'RESTRICT',
+      onUpdate: 'CASCADE',
+    },
   },
-  name: {
-    type: String,
-    require: true,
+  {
+    freezeTableName: true,
+    timestamps: false,
+    underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['email'],
+      },
+    ],
   },
-  email: {
-    type: String,
-    require: true,
-  },
-  address: {
-    type: String,
-  },
-  phone: {
-    type: String,
-  },
-});
+);
 
-const UsersModel = mongoose.model('users', UsersSchema);
+RolesModel.hasMany(UsersModel, { foreignKey: 'id' });
+UsersModel.belongsTo(RolesModel, { foreignKey: 'idRole' });
 
 module.exports = UsersModel;

@@ -24,7 +24,7 @@
 
    - request body: resi, nama penerima, status pengiriman
 
-6. Mendapatkan detil barang pengiriman (public) `/shipments`
+6. Mendapatkan detil barang pengiriman (public) `/shipments/{resi}`
 
    - request body: resi
 
@@ -116,11 +116,13 @@
          "pengirim": {
            "nama": string,
            "alamat": string,
+           "kota": string,
            "noHp": string
          },
          "penerima": {
            "nama": string,
            "alamat": string,
+           "kota": string,
            "noHp": string
          }
        }
@@ -180,9 +182,9 @@
        {
          "status": "success",
          "data": {
+           "resi": string,
            "gudang": [
              {
-               "resi": string,
                "waktu": datetime,
                "kurir": string
              }
@@ -240,7 +242,13 @@
        {
          "status": "success",
          "data": {
-           "accessToken": string
+           "resi": string,
+           "lokasi": [
+             {
+               "waktu": datetime,
+               "kurir": string
+             }
+           ]
          }
        }
        ```

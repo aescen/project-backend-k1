@@ -42,7 +42,7 @@ const errorHandler = (err, req, res, next) => {
 })();
 
 // -- setups / middlewares
-app.set('views', `${__dirname}/view/`);
+app.set('views', `${__dirname}/views/`);
 app.set('view engine', 'pug');
 
 app.use(express.json());

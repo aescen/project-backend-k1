@@ -18,7 +18,7 @@
 
 4. Mengupdate lokasi gudang barang pengiriman (protected as admin) `/shipments/{resi}`
 
-   - request body: resi, id gudang
+   - request body: resi, nama gudang, keterangan
 
 5. Mengupdate status pengiriman (protected as kurir): `/shipments/{resi}`
 
@@ -163,13 +163,14 @@
 
    - Request:
 
-     - Path: `/shipments/{resi}`
+     - Path: `/shipments/gudang/{resi}`
      - Method: `PUT`
      - Body:
 
        ```json
        {
          "namaGudang": string,
+         "keterangan": string
        }
        ```
 

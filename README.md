@@ -10,7 +10,7 @@
 
 2. Login, mendapatkan access token (admin / kurir): `/login`
 
-   - access token berisi data akun: id, email
+   - access token berisi data akun: id, nama, role
 
 3. Menambah barang pengiriman (protected as admin): `/shipments`
 
@@ -206,7 +206,6 @@
        ```json
        {
          "statusPengiriman": string,
-         "namaPenerima": string
        }
        ```
 
@@ -221,7 +220,6 @@
          "data": {
            "resi": string,
            "statusPengiriman": string,
-           "namaPenerima": string
          }
        }
        ```

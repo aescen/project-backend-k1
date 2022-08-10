@@ -1,14 +1,49 @@
-const { UsersModel } = require('../../models');
+const { Op } = require('sequelize');
+const { RolesModel, UsersModel } = require('../../models');
+const { BCryptPassword } = require('../../utils');
 
 module.exports = {
   addUser: async (req, res) => {
+    const { role: roleJwt } = req.jwt.decoded;
+
+    if (roleJwt !== 'super') {
+      res.status(403);
+      res.json({
+        status: 'error',
+        message: 'Anda tidak memiliki hak akses.',
+      });
+      return;
+    }
+
     const {
-      username, name, email, birthDate,
+      nama, email, password, noHp, role,
     } = req.body;
+
+    const roles = await RolesModel.findAll({
+      where: {
+        role: {
+          [Op.ne]: 'super',
+        },
+      },
+    });
+
+    const userRole = roles.find((item) => item.role === role);
+
+    if (!userRole) {
+      res.status(400);
+      res.json({
+        message: 'Role tidak diketahui.',
+      });
+      return;
+    }
 
     const userFound = await UsersModel.findOne({
       where: {
-        username,
+        email,
+      },
+      include: {
+        model: RolesModel,
+        required: false,
       },
     });
 
@@ -20,45 +55,80 @@ module.exports = {
       return;
     }
 
+    const hashedPassword = await BCryptPassword.hash(password);
     const addedUser = await UsersModel.create({
-      username,
-      name,
+      nama,
       email,
-      birthDate,
+      password: hashedPassword,
+      noHp,
+      idRole: userRole.id,
     });
 
     res.status(201);
     res.json({
-      message: 'Berhasil menambah user baru.',
+      status: 'success',
+      data: {
+        id: addedUser.id,
+        nama: addedUser.nama,
+        email: addedUser.email,
+        noHp: addedUser.noHp,
+        role: userRole.role,
+      },
     });
   },
   getAllUsers: async (req, res) => {
-    const users = await UsersModel.findAll();
-    res.json(users);
+    const { role } = req.jwt.decoded;
+
+    if (role !== 'super') {
+      res.status(403);
+      res.json({
+        status: 'error',
+        message: 'Anda tidak memiliki hak akses.',
+      });
+      return;
+    }
+
+    const users = await UsersModel.findAll({
+      where: {
+        '$role.role$': {
+          [Op.ne]: 'super',
+        },
+      },
+      include: {
+        model: RolesModel,
+        required: false,
+      },
+    });
+    const mappedUsers = users.map((item) => ({
+      id: item.id,
+      nama: item.nama,
+      email: item.email,
+      noHp: item.noHp,
+      role: item.role.role,
+    }));
+
+    res.json(mappedUsers);
   },
   getUserById: async (req, res) => {
+    const { role } = req.jwt.decoded;
+
+    if (role !== 'super') {
+      res.status(403);
+      res.json({
+        status: 'error',
+        message: 'Anda tidak memiliki hak akses.',
+      });
+      return;
+    }
+
     const { id: userId } = req.params;
     const userFound = await UsersModel.findOne({
       where: {
         id: userId,
       },
-    });
-
-    if (userFound === null) {
-      res.status(404);
-      res.json({
-        message: 'User tidak terdaftar.',
-      });
-      return;
-    }
-
-    res.json(userFound);
-  },
-  getUserByUsername: async (req, res) => {
-    const { username } = req.params;
-    const userFound = await UsersModel.findOne({
-      where: {
-        username,
+      include: {
+        model: RolesModel,
+        required: false,
       },
     });
 
@@ -73,53 +143,57 @@ module.exports = {
     res.json(userFound);
   },
   updateUserById: async (req, res) => {
+    const { role: roleJwt } = req.jwt.decoded;
+
+    if (roleJwt !== 'super') {
+      res.status(403);
+      res.json({
+        status: 'error',
+        message: 'Anda tidak memiliki hak akses.',
+      });
+      return;
+    }
+
     const { id: userId } = req.params;
     const {
-      username, name, email, birthDate,
+      nama, email, password, noHp, role,
     } = req.body;
-    const updatedAt = new Date();
+
+    const roles = await RolesModel.findAll({
+      where: {
+        role: {
+          [Op.ne]: 'super',
+        },
+      },
+    });
+
+    const userRole = roles.find((item) => item.role === role);
+
+    if (!userRole) {
+      res.status(400);
+      res.json({
+        message: 'Role tidak diketahui.',
+      });
+      return;
+    }
+
+    const hashedPassword = await BCryptPassword.hash(password);
+
     const updatedUserRow = await UsersModel.update(
       {
-        username,
-        name,
+        nama,
         email,
-        birthDate,
-        updatedAt,
+        password: hashedPassword,
+        noHp,
+        idRole: userRole.id,
       },
       {
         where: {
           id: userId,
         },
-      },
-    );
-
-    if (updatedUserRow[0] === 0) {
-      res.status(404);
-      res.json({
-        message: 'User tidak terdaftar.',
-      });
-      return;
-    }
-
-    res.json({
-      message: 'Berhasil merubah data user.',
-    });
-  },
-  updateUserByUsername: async (req, res) => {
-    const { username } = req.params;
-    const { name, email, birthDate } = req.body;
-    const updatedAt = new Date();
-    const updatedUserRow = await UsersModel.update(
-      {
-        username,
-        name,
-        email,
-        birthDate,
-        updatedAt,
-      },
-      {
-        where: {
-          username,
+        include: {
+          model: RolesModel,
+          required: false,
         },
       },
     );
@@ -135,34 +209,23 @@ module.exports = {
     res.json({
       message: 'Berhasil merubah data user.',
     });
-
-    res.json(updatedUserRow);
   },
   deleteUserById: async (req, res) => {
-    const { id: userId } = req.params;
-    const deletedUserRow = await UsersModel.destroy({
-      where: {
-        id: userId,
-      },
-    });
+    const { role } = req.jwt.decoded;
 
-    if (!deletedUserRow) {
-      res.status(404);
+    if (role !== 'super') {
+      res.status(403);
       res.json({
-        message: 'User tidak terdaftar.',
+        status: 'error',
+        message: 'Anda tidak memiliki hak akses.',
       });
       return;
     }
 
-    res.json({
-      message: 'Berhasil menghapus user.',
-    });
-  },
-  deleteUserByUsername: async (req, res) => {
-    const { username } = req.params;
+    const { id: userId } = req.params;
     const deletedUserRow = await UsersModel.destroy({
       where: {
-        username,
+        id: userId,
       },
     });
 

@@ -19,6 +19,7 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "nanoid": "^4.0.0",
+    "pug": "^3.0.2",
     "sequelize": "^6.21.3"
   },
   "devDependencies": {

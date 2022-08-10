@@ -2,16 +2,37 @@
 
 # Fitur
 
-- Registrasi akun (superuser)
-- Login, mendapatkan access token (admin / kurir)
-- Menambah barang pengiriman (protected as admin)
-- Mendapatkan detil barang pengiriman (public)
-- Mengupdate lokasi gudang barang pengiriman (protected as admin)
-- Mengupdate status pengiriman (protected)
+1. Registrasi akun (superuser): `/users`
+
+   - Menambah akun admin gudang
+   - Menambah akun kurir
+   - request body: nama, email, password, no hp, role
+
+2. Login, mendapatkan access token (admin / kurir): `/login`
+
+   - access token berisi data akun: id, email
+
+3. Menambah barang pengiriman (protected as admin): `/shipments`
+
+   - request body: nama, berat, pengirim, penerima
+
+4. Mengupdate lokasi gudang barang pengiriman (protected as admin) `/shipments/{resi}`
+
+   - request body: resi, id gudang
+
+5. Mengupdate status pengiriman (protected as kurir): `/shipments/{resi}`
+
+   - request body: resi, nama penerima, status pengiriman
+
+6. Mendapatkan detil barang pengiriman (public) `/shipments`
+
+   - request body: resi
 
 # Spek
 
 1. Registrasi akun
+
+   Properti `role` bisa `admin` atau `kurir`.
 
    - Request:
 
@@ -24,7 +45,7 @@
          "nama": string,
          "email": string,
          "password": string,
-         "nohp": string,
+         "noHp": string,
          "role": string,
        }
        ```
@@ -43,7 +64,7 @@
            "nama": string,
            "email": string,
            "password": string,
-           "nohp": string,
+           "noHp": string,
            "role": string
          }
        }
@@ -95,12 +116,12 @@
          "pengirim": {
            "nama": string,
            "alamat": string,
-           "nohp": string
+           "noHp": string
          },
          "penerima": {
            "nama": string,
            "alamat": string,
-           "nohp": string
+           "noHp": string
          }
        }
        ```
@@ -123,46 +144,20 @@
            "pengirim": {
              "nama": string,
              "alamat": string,
-             "nohp": string
+             "noHp": string
            },
            "penerima": {
              "nama": string,
              "alamat": string,
-             "nohp": string
+             "noHp": string
            }
          }
        }
        ```
 
-4. Mendapatkan detil barang pengiriman
+4. Mengupdate lokasi gudang barang pengiriman
 
-   - Request:
-
-     - Path: `/shipments`
-     - Method: `GET`
-     - Body:
-
-       ```json
-       {
-         "resi": string
-       }
-       ```
-
-   - Response:
-
-     - Status: `200`
-     - Body:
-
-       ```json
-       {
-         "status": "success",
-         "data": {
-           "accessToken": string
-         }
-       }
-       ```
-
-5. Mengupdate lokasi gudang barang pengiriman
+   Setiap perpindahan barang terdapat update lokasi pengiriman.
 
    - Request:
 
@@ -172,7 +167,6 @@
 
        ```json
        {
-         "resi": string,
          "idGudang": string,
        }
        ```
@@ -197,7 +191,9 @@
        }
        ```
 
-6. Mengupdate status pengiriman
+5. Mengupdate status pengiriman
+
+   Kurir dapat mengupdate status pengiriman
 
    - Request:
 
@@ -207,7 +203,6 @@
 
        ```json
        {
-         "resi": string,
          "statusPengiriman": string,
          "namaPenerima": string
        }
@@ -225,6 +220,27 @@
            "resi": string,
            "statusPengiriman": string,
            "namaPenerima": string
+         }
+       }
+       ```
+
+6. Mendapatkan detil barang pengiriman
+
+   - Request:
+
+     - Path: `/shipments/{resi}`
+     - Method: `GET`
+
+   - Response:
+
+     - Status: `200`
+     - Body:
+
+       ```json
+       {
+         "status": "success",
+         "data": {
+           "accessToken": string
          }
        }
        ```

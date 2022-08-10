@@ -41,8 +41,6 @@ const errorHandler = (err, req, res, next) => {
   }
 })();
 
-// testDbConnection();
-
 // -- setups / middlewares
 app.set('views', `${__dirname}/view/`);
 app.set('view engine', 'pug');

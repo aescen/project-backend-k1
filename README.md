@@ -206,7 +206,7 @@
 
        ```json
        {
-         "statusPengiriman": string,
+         "keterangan": string,
        }
        ```
 
@@ -220,7 +220,8 @@
          "status": "success",
          "data": {
            "resi": string,
-           "statusPengiriman": string,
+           "keterangan": string,
+           "waktu": string,
          }
        }
        ```

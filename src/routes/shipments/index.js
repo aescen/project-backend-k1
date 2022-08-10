@@ -11,5 +11,6 @@ shipmentsRoutes.post('/', (req, res) => {
 });
 shipmentsRoutes.get('/:resi', shipments.getPengiriman);
 shipmentsRoutes.put('/gudang/:resi', verifyJWT, shipments.updatePengirimanGudang);
+shipmentsRoutes.put('/kurir/:resi', verifyJWT, shipments.updatePengirimanKurir);
 
 module.exports = shipmentsRoutes;

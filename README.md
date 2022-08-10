@@ -187,7 +187,7 @@
            "gudang": [
              {
                "waktu": datetime,
-               "kurir": string
+               "keterangan": string
              }
            ]
          }

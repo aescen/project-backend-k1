@@ -169,7 +169,7 @@
 
        ```json
        {
-         "idGudang": string,
+         "namaGudang": string,
        }
        ```
 

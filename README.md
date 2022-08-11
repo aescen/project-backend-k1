@@ -288,9 +288,13 @@
            "lokasi": [
              {
                "keterangan": "string",
-               "waktu": "datetime",
+               "waktu": "datetime"
              }
            ]
          }
        }
        ```
+
+### Test Collection
+
+- Thunder Client (VSCode): [AIALogisticsAPI](./test/AIALogisticsAPI.json 'AIALogisticsAPI')

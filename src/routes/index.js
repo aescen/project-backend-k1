@@ -17,15 +17,15 @@ routes.get('/', (req, res) => {
 
   if (mType === 'application/json') {
     res.json({
-      title: 'AIA Logistics',
-      message: 'AIA Logistics',
+      title: 'AIA Kargo Express',
+      message: 'AIA Kargo Express',
     });
     return;
   }
 
   res.render('index', {
-    title: 'AIA Logistics',
-    message: 'AIA Logistics',
+    title: 'AIA Kargo Express',
+    message: 'AIA Kargo Express',
   });
 });
 

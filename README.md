@@ -297,4 +297,8 @@
 
 ### Test Collection
 
-- Thunder Client (VSCode): [AIALogisticsAPI](./test/AIALogisticsAPI.json 'AIALogisticsAPI')
+- Thunder Client (VSCode): [AIA Logistics API](./test/AIALogisticsAPI.json 'AIALogisticsAPI')
+
+### Link Deploy
+
+- Heroku: [server backend kurir](https://server-backend-kurir.herokuapp.com/ 'server-backend-kurir')

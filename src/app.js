@@ -34,7 +34,7 @@ const errorHandler = (err, req, res, next) => {
     await Models.UsersModel.sync({ alter: true });
     await Models.KodeKotaModel.sync({ alter: true });
     await Models.GudangModel.sync({ alter: true });
-    await Models.BarangModel.sync({ alter: true });
+    await Models.PesananModel.sync({ alter: true });
     await Models.PengirimanModel.sync({ alter: true });
     await Models.OngkirModel.sync({ alter: true });
     console.log('DB setup done.');

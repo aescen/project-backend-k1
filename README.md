@@ -1,6 +1,6 @@
 # Project Backend Kelompok 1: Aplikasi Kurir
 
-# Fitur
+## Fitur
 
 1. Registrasi akun (superuser): `/users`
 
@@ -32,7 +32,7 @@
 
    - request body: resi
 
-# Specs
+## Specs
 
 1. Registrasi akun
 
@@ -288,9 +288,17 @@
            "lokasi": [
              {
                "keterangan": "string",
-               "waktu": "datetime",
+               "waktu": "datetime"
              }
            ]
          }
        }
        ```
+
+### Test Collection
+
+- Thunder Client (VSCode): [AIA Logistics API](./test/AIALogisticsAPI.json 'AIALogisticsAPI')
+
+### Link Deploy
+
+- Heroku: [server backend kurir](https://server-backend-kurir.herokuapp.com/ 'server-backend-kurir')

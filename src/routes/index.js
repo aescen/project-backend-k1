@@ -17,15 +17,15 @@ routes.get('/', (req, res) => {
 
   if (mType === 'application/json') {
     res.json({
-      title: 'ExpressJS',
-      message: 'Latihan Sequelize ExpressJS',
+      title: 'AIA Kargo Express',
+      message: 'AIA Kargo Express',
     });
     return;
   }
 
   res.render('index', {
-    title: 'ExpressJS',
-    message: 'Latihan Sequelize ExpressJS',
+    title: 'AIA Kargo Express',
+    message: 'AIA Kargo Express',
   });
 });
 

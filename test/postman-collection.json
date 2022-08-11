@@ -1,0 +1,12 @@
+{
+    "info": {
+        "_postman_id": "b7503f26-58e3-4ae8-a0d6-b2023f69fe94",
+        "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "shipments",
+            "item": []
+        }
+    ]
+}

@@ -1,4 +1,5 @@
 const { Op, Sequelize } = require('sequelize');
+const { customAlphabet } = require('nanoid');
 const {
   BarangModel,
   PengirimanModel,
@@ -6,7 +7,10 @@ const {
   UsersModel,
   KodeKotaModel,
   RolesModel,
+  OngkirModel,
 } = require('../../models');
+
+const nanoid = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10);
 
 module.exports = {
   getPengiriman: async (req, res) => {
@@ -18,6 +22,7 @@ module.exports = {
         '$barang.resi$': { [Op.eq]: resi || null },
       },
     });
+
     const pengiriman = pesanan.map((item) => ({
       keterangan: item.keterangan,
       waktu: item.waktu,
@@ -29,6 +34,143 @@ module.exports = {
       data: {
         resi,
         lokasi: pengiriman,
+      },
+    });
+  },
+
+  addPengirimanBarang: async (req, res) => {
+    const { id: idJwt, role: roleJwt } = req.jwt.decoded;
+
+    if (roleJwt === 'kurir') {
+      res.status(403);
+      res.json({
+        status: 'error',
+        message: 'Anda tidak memiliki hak akses.',
+      });
+      return;
+    }
+
+    const {
+      namaGudang, barang, pengirim, penerima,
+    } = req.body;
+
+    if (!namaGudang || !barang || !pengirim || !penerima) {
+      res.status(400);
+      res.json({
+        status: 'error',
+        message: 'Data tidak lengkap.',
+      });
+      return;
+    }
+
+    const gudang = await GudangModel.findOne({
+      where: {
+        nama: namaGudang || null,
+      },
+      include: [
+        {
+          model: UsersModel,
+          required: false,
+          include: {
+            model: RolesModel,
+            required: false,
+          },
+        },
+        {
+          model: KodeKotaModel,
+          required: false,
+        },
+      ],
+    });
+
+    if (!gudang) {
+      res.status(404);
+      res.json({
+        status: 'error',
+        message: 'Gudang tidak ditemukan.',
+      });
+      return;
+    }
+
+    const idAdminGudang = gudang.user.id;
+
+    if (idAdminGudang !== idJwt) {
+      res.status(403);
+      res.json({
+        status: 'error',
+        message: 'Anda tidak berhak mengakses gudang ini.',
+      });
+      return;
+    }
+
+    const kodeKota = await KodeKotaModel.findOne({
+      where: {
+        nama: {
+          [Op.or]: {
+            [Op.eq]: pengirim.kota.toUpperCase(),
+            [Op.eq]: penerima.kota.toUpperCase(),
+          },
+        },
+      },
+    });
+
+    const ongkirData = await OngkirModel.findOne({
+      where: {
+        kotaPengirim: pengirim.kota.toUpperCase(),
+        kotaPenerima: penerima.kota.toUpperCase(),
+      },
+    });
+
+    console.log(JSON.stringify(kodeKota));
+
+    // const kodeKotaPengirim = kodeKota.find(
+    //   (item) => item.nama === pengirim.kota.toUpperCase(),
+    // );
+    // const kodeKotaPenerima = kodeKota.find(
+    //   (item) => item.nama === penerima.kota.toUpperCase(),
+    // );
+
+    // if (!kodeKotaPengirim || !kodeKotaPenerima || !ongkirData) {
+    //   res.status(400);
+    //   res.json({
+    //     status: 'error',
+    //     message: 'Data kota belum terdaftar di sistem.',
+    //   });
+    //   return;
+    // }
+
+    // const idBarang = nanoid();
+    // const resi = `${kodeKotaPengirim}-${kodeKotaPenerima}-${idBarang}`.toUpperCase();
+    // const { ongkir } = ongkirData;
+    // const newPesanan = {
+    //   id: idBarang,
+    //   idAdmin: idJwt,
+    //   resi,
+    //   namaBarang: barang.nama,
+    //   namaPengirim: pengirim.nama,
+    //   namaPenerima: penerima.nama,
+    //   alamatPengirim: pengirim.alamat,
+    //   alamatPenerima: penerima.noHp,
+    //   noHpPengirim: pengirim.noHp,
+    //   noHpPenerima: penerima.noHp,
+    //   berat: barang.berat,
+    //   ongkir,
+    //   status: 'Diproses',
+    //   createdAt: Sequelize.literal('NOW()'),
+    //   updatedAt: Sequelize.literal('NOW()'),
+    // };
+
+    // await BarangModel.create({ ...newPesanan });
+
+    res.status(201);
+    res.json({
+      status: 'success',
+      data: {
+        resi,
+        ongkir,
+        barang,
+        pengirim,
+        penerima,
       },
     });
   },
@@ -46,7 +188,16 @@ module.exports = {
     }
 
     const { resi } = req.params;
-    const { namaGudang: paramNamaGudang, keterangan } = req.body;
+    const { namaGudang, keterangan } = req.body;
+
+    if (!namaGudang || !keterangan) {
+      res.status(400);
+      res.json({
+        status: 'error',
+        message: 'Data tidak lengkap.',
+      });
+      return;
+    }
 
     const pesanan = await BarangModel.findOne({
       where: {
@@ -65,7 +216,7 @@ module.exports = {
 
     const gudang = await GudangModel.findOne({
       where: {
-        nama: paramNamaGudang || null,
+        nama: namaGudang || null,
       },
       include: [
         {
@@ -83,17 +234,16 @@ module.exports = {
       ],
     });
 
-    const idAdminGudang = gudang.user.id;
-    const namaGudang = gudang.nama;
-
-    if (paramNamaGudang !== namaGudang) {
-      res.status(400);
+    if (!gudang) {
+      res.status(404);
       res.json({
         status: 'error',
-        message: 'Nama gudang tidak sesuai.',
+        message: 'Gudang tidak ditemukan.',
       });
       return;
     }
+
+    const idAdminGudang = gudang.user.id;
 
     if (idAdminGudang !== idJwt) {
       res.status(403);
@@ -140,6 +290,15 @@ module.exports = {
     const { id: idJwt, role: roleJwt } = req.jwt.decoded;
     const { resi } = req.params;
     const { keterangan } = req.body;
+
+    if (!keterangan) {
+      res.status(400);
+      res.json({
+        status: 'error',
+        message: 'Data tidak lengkap.',
+      });
+      return;
+    }
 
     const userFound = await UsersModel.findOne({
       where: {

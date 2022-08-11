@@ -28,7 +28,7 @@
 
    - request body: resi
 
-# Spek
+# Specs
 
 1. Registrasi akun
 
@@ -109,6 +109,7 @@
 
        ```json
        {
+         "namaGudang": string,
          "barang": {
            "nama": string,
            "berat": number
@@ -144,13 +145,15 @@
              "berat": number
            },
            "pengirim": {
-             "nama": string,
-             "alamat": string,
-             "noHp": string
+           "nama": string,
+           "alamat": string,
+           "kota": string,
+           "noHp": string
            },
            "penerima": {
              "nama": string,
              "alamat": string,
+             "kota": string,
              "noHp": string
            }
          }

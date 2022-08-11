@@ -4,6 +4,7 @@ const KodeKotaModel = require('./kodekota');
 const GudangModel = require('./gudang');
 const BarangModel = require('./barang');
 const PengirimanModel = require('./pengiriman');
+const OngkirModel = require('./ongkir');
 
 module.exports = {
   RolesModel,
@@ -12,4 +13,5 @@ module.exports = {
   GudangModel,
   BarangModel,
   PengirimanModel,
+  OngkirModel,
 };

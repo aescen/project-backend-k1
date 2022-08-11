@@ -1,6 +1,6 @@
 const { Op, Sequelize } = require('sequelize');
 const {
-  BarangModel,
+  PesananModel,
   PengirimanModel,
   GudangModel,
   UsersModel,
@@ -9,31 +9,8 @@ const {
 } = require('../../models');
 
 module.exports = {
-  getPengiriman: async (req, res) => {
-    const { resi } = req.params;
-
-    const pesanan = await PengirimanModel.findAll({
-      include: BarangModel,
-      where: {
-        '$barang.resi$': { [Op.eq]: resi || null },
-      },
-    });
-    const pengiriman = pesanan.map((item) => ({
-      keterangan: item.keterangan,
-      waktu: item.waktu,
-    }));
-
-    res.status(200);
-    res.json({
-      status: 'success',
-      data: {
-        resi,
-        lokasi: pengiriman,
-      },
-    });
-  },
-
-  updatePengirimanGudang: async (req, res) => {
+  // add pengiriman
+  addPengirimanBarang: async (req, res) => {
     const { id: idJwt, role: roleJwt } = req.jwt.decoded;
 
     if (roleJwt === 'kurir') {
@@ -45,10 +22,18 @@ module.exports = {
       return;
     }
 
-    const { resi } = req.params;
-    const { namaGudang: paramNamaGudang, keterangan } = req.body;
+    const { resi, namaGudang, keterangan } = req.body;
 
-    const pesanan = await BarangModel.findOne({
+    if (!resi || !namaGudang || !keterangan) {
+      res.status(400);
+      res.json({
+        status: 'error',
+        message: 'Data tidak lengkap.',
+      });
+      return;
+    }
+
+    const pesanan = await PesananModel.findOne({
       where: {
         resi: resi || null,
       },
@@ -65,7 +50,7 @@ module.exports = {
 
     const gudang = await GudangModel.findOne({
       where: {
-        nama: paramNamaGudang || null,
+        nama: namaGudang || null,
       },
       include: [
         {
@@ -83,17 +68,16 @@ module.exports = {
       ],
     });
 
-    const idAdminGudang = gudang.user.id;
-    const namaGudang = gudang.nama;
-
-    if (paramNamaGudang !== namaGudang) {
-      res.status(400);
+    if (!gudang) {
+      res.status(404);
       res.json({
         status: 'error',
-        message: 'Nama gudang tidak sesuai.',
+        message: 'Gudang tidak ditemukan.',
       });
       return;
     }
+
+    const idAdminGudang = gudang.user.id;
 
     if (idAdminGudang !== idJwt) {
       res.status(403);
@@ -104,20 +88,156 @@ module.exports = {
       return;
     }
 
-    const idBarang = resi.split('-')[2];
+    const idPesanan = resi.split('-')[2];
     const idGudang = gudang.id;
 
     await PengirimanModel.create({
-      idBarang,
+      idPesanan,
+      idGudang,
+      keterangan,
+      waktu: Sequelize.literal('NOW()'),
+    });
+
+    const pengiriman = await PengirimanModel.findOne({
+      include: PesananModel,
+      where: {
+        '$pesanan.resi$': { [Op.eq]: resi || null },
+      },
+    });
+
+    const mappedPengiriman = {
+      keterangan: pengiriman.keterangan,
+      waktu: pengiriman.waktu,
+    };
+
+    res.status(201);
+    res.json({
+      status: 'success',
+      data: {
+        resi,
+        pengiriman: mappedPengiriman,
+      },
+    });
+  },
+  // get pengiriman by resi
+  getPengirimanByResi: async (req, res) => {
+    const { resi } = req.params;
+
+    const pesanan = await PengirimanModel.findAll({
+      include: PesananModel,
+      where: {
+        '$pesanan.resi$': { [Op.eq]: resi || null },
+      },
+    });
+
+    const pengiriman = pesanan.map((item) => ({
+      keterangan: item.keterangan,
+      waktu: item.waktu,
+    }));
+
+    res.status(200);
+    res.json({
+      status: 'success',
+      data: {
+        resi,
+        lokasi: pengiriman,
+      },
+    });
+  },
+  // Update pengiriman as admin
+  updatePengirimanGudang: async (req, res) => {
+    const { id: idJwt, role: roleJwt } = req.jwt.decoded;
+
+    if (roleJwt === 'kurir') {
+      res.status(403);
+      res.json({
+        status: 'error',
+        message: 'Anda tidak memiliki hak akses.',
+      });
+      return;
+    }
+
+    const { resi } = req.params;
+    const { namaGudang, keterangan } = req.body;
+
+    if (!namaGudang || !keterangan) {
+      res.status(400);
+      res.json({
+        status: 'error',
+        message: 'Data tidak lengkap.',
+      });
+      return;
+    }
+
+    const pesanan = await PesananModel.findOne({
+      where: {
+        resi: resi || null,
+      },
+    });
+
+    if (pesanan === null) {
+      res.status(404);
+      res.json({
+        status: 'error',
+        message: 'Pesanan tidak ditemukan.',
+      });
+      return;
+    }
+
+    const gudang = await GudangModel.findOne({
+      where: {
+        nama: namaGudang || null,
+      },
+      include: [
+        {
+          model: UsersModel,
+          required: false,
+          include: {
+            model: RolesModel,
+            required: false,
+          },
+        },
+        {
+          model: KodeKotaModel,
+          required: false,
+        },
+      ],
+    });
+
+    if (!gudang) {
+      res.status(404);
+      res.json({
+        status: 'error',
+        message: 'Gudang tidak ditemukan.',
+      });
+      return;
+    }
+
+    const idAdminGudang = gudang.user.id;
+
+    if (idAdminGudang !== idJwt) {
+      res.status(403);
+      res.json({
+        status: 'error',
+        message: 'Anda tidak berhak mengakses gudang ini.',
+      });
+      return;
+    }
+
+    const idPesanan = resi.split('-')[2];
+    const idGudang = gudang.id;
+
+    await PengirimanModel.create({
+      idPesanan,
       idGudang,
       keterangan,
       waktu: Sequelize.literal('NOW()'),
     });
 
     const newPengiriman = await PengirimanModel.findAll({
-      include: BarangModel,
+      include: PesananModel,
       where: {
-        '$barang.resi$': { [Op.eq]: resi || null },
+        '$pesanan.resi$': { [Op.eq]: resi || null },
       },
     });
 
@@ -135,11 +255,20 @@ module.exports = {
       },
     });
   },
-
+  // updatePengiriman as kurir
   updatePengirimanKurir: async (req, res) => {
     const { id: idJwt, role: roleJwt } = req.jwt.decoded;
     const { resi } = req.params;
     const { keterangan } = req.body;
+
+    if (!keterangan) {
+      res.status(400);
+      res.json({
+        status: 'error',
+        message: 'Data tidak lengkap.',
+      });
+      return;
+    }
 
     const userFound = await UsersModel.findOne({
       where: {
@@ -155,9 +284,9 @@ module.exports = {
     });
 
     const pesanan = await PengirimanModel.findOne({
-      include: BarangModel,
+      include: PesananModel,
       where: {
-        '$barang.resi$': { [Op.eq]: resi || null },
+        '$pesanan.resi$': { [Op.eq]: resi || null },
       },
       order: [['waktu', 'DESC']],
     });
@@ -171,12 +300,12 @@ module.exports = {
       return;
     }
 
-    const { idBarang, idGudang } = pesanan;
+    const { idPesanan, idGudang } = pesanan;
     const idKurir = userFound !== null ? userFound.id : null;
     const waktu = new Date().toISOString();
 
     await PengirimanModel.create({
-      idBarang,
+      idPesanan,
       idGudang,
       keterangan,
       waktu: Sequelize.literal('NOW()'),

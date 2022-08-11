@@ -2,8 +2,8 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../../config/dbConnection');
 const UsersModel = require('../users');
 
-const BarangModel = sequelize.define(
-  'barang',
+const PesananModel = sequelize.define(
+  'pesanan',
   {
     id: {
       type: DataTypes.STRING(64),
@@ -87,7 +87,7 @@ const BarangModel = sequelize.define(
   },
 );
 
-UsersModel.hasMany(BarangModel, { foreignKey: 'id' });
-BarangModel.belongsTo(UsersModel, { foreignKey: 'idAdmin' });
+UsersModel.hasMany(PesananModel, { foreignKey: 'id' });
+PesananModel.belongsTo(UsersModel, { foreignKey: 'idAdmin' });
 
-module.exports = BarangModel;
+module.exports = PesananModel;

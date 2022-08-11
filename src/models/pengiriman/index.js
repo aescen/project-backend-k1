@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/dbConnection');
-const BarangModel = require('../barang');
+const PesananModel = require('../pesanan');
 const GudangModel = require('../gudang');
 const UsersModel = require('../users');
 
@@ -12,11 +12,11 @@ const PengirimanModel = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    idBarang: {
+    idPesanan: {
       type: DataTypes.STRING(64),
       allowNull: false,
       references: {
-        model: BarangModel,
+        model: PesananModel,
         key: 'id',
       },
       onDelete: 'RESTRICT',
@@ -58,8 +58,8 @@ const PengirimanModel = sequelize.define(
   },
 );
 
-BarangModel.hasMany(PengirimanModel, { foreignKey: 'id' });
-PengirimanModel.belongsTo(BarangModel, { foreignKey: 'idBarang' });
+PesananModel.hasMany(PengirimanModel, { foreignKey: 'id' });
+PengirimanModel.belongsTo(PesananModel, { foreignKey: 'idPesanan' });
 
 GudangModel.hasMany(PengirimanModel, { foreignKey: 'id' });
 PengirimanModel.belongsTo(GudangModel, { foreignKey: 'idGudang' });

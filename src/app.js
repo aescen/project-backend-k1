@@ -41,7 +41,6 @@ const errorHandler = (err, req, res, next) => {
   } catch (error) {
     console.error(error);
     console.error('Unable to connect to the database.');
-    process.exit(-1);
   }
 })();
 

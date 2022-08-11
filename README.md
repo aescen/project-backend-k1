@@ -228,8 +228,8 @@
            "resi": "string",
            "gudang": [
              {
-               "waktu": datetime,
-               "kurir": "string"
+               "waktu": "datetime",
+               "keterangan": "string"
              }
            ]
          }
@@ -288,7 +288,7 @@
            "lokasi": [
              {
                "keterangan": "string",
-               "waktu": datetime,
+               "waktu": "datetime",
              }
            ]
          }

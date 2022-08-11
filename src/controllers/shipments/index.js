@@ -80,12 +80,14 @@ module.exports = {
     const idAdminGudang = gudang.user.id;
 
     if (idAdminGudang !== idJwt) {
-      res.status(403);
-      res.json({
-        status: 'error',
-        message: 'Anda tidak berhak mengakses gudang ini.',
-      });
-      return;
+      if (roleJwt !== 'super') {
+        res.status(403);
+        res.json({
+          status: 'error',
+          message: 'Anda tidak berhak mengakses gudang ini.',
+        });
+        return;
+      }
     }
 
     const idPesanan = resi.split('-')[2];
@@ -216,12 +218,14 @@ module.exports = {
     const idAdminGudang = gudang.user.id;
 
     if (idAdminGudang !== idJwt) {
-      res.status(403);
-      res.json({
-        status: 'error',
-        message: 'Anda tidak berhak mengakses gudang ini.',
-      });
-      return;
+      if (roleJwt !== 'super') {
+        res.status(403);
+        res.json({
+          status: 'error',
+          message: 'Anda tidak berhak mengakses gudang ini.',
+        });
+        return;
+      }
     }
 
     const idPesanan = resi.split('-')[2];
@@ -259,7 +263,7 @@ module.exports = {
   updatePengirimanKurir: async (req, res) => {
     const { id: idJwt, role: roleJwt } = req.jwt.decoded;
     const { resi } = req.params;
-    const { keterangan } = req.body;
+    const { keterangan, status } = req.body;
 
     if (!keterangan) {
       res.status(400);
@@ -300,6 +304,29 @@ module.exports = {
       return;
     }
 
+    if (status) {
+      const updateStatusPesananRow = await PesananModel.update(
+        {
+          status,
+          updatedAt: Sequelize.literal('NOW()'),
+        },
+        {
+          where: {
+            resi,
+          },
+        },
+      );
+
+      if (updateStatusPesananRow[0] === 0) {
+        res.status(404);
+        res.json({
+          status: 'error',
+          message: 'Gagal merubah data pesanan. Pesanan tidak ditemukan.',
+        });
+        return;
+      }
+    }
+
     const { idPesanan, idGudang } = pesanan;
     const idKurir = userFound !== null ? userFound.id : null;
     const waktu = new Date().toISOString();
@@ -312,14 +339,20 @@ module.exports = {
       idKurir,
     });
 
-    res.status(200);
-    res.json({
+    const resBody = {
       status: 'success',
       data: {
         resi,
         keterangan,
         waktu,
       },
-    });
+    };
+
+    if (status) {
+      resBody.data.status = status;
+    }
+
+    res.status(200);
+    res.json(resBody);
   },
 };

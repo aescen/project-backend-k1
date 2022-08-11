@@ -11,6 +11,8 @@ const {
 
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ9876543210', 12);
 
+const PER_KILO = 5;
+
 module.exports = {
   // Add pesanan
   addPesanan: async (req, res) => {
@@ -70,12 +72,14 @@ module.exports = {
     const idAdminGudang = gudang.user.id;
 
     if (idAdminGudang !== idJwt) {
-      res.status(403);
-      res.json({
-        status: 'error',
-        message: 'Anda tidak berhak mengakses gudang ini.',
-      });
-      return;
+      if (roleJwt !== 'super') {
+        res.status(403);
+        res.json({
+          status: 'error',
+          message: 'Anda tidak berhak mengakses gudang ini.',
+        });
+        return;
+      }
     }
 
     const kodeKota = await KodeKotaModel.findAll({
@@ -112,7 +116,8 @@ module.exports = {
 
     const idPesanan = nanoid();
     const resi = `${kodeKotaPengirim.kode}-${kodeKotaPenerima.kode}-${idPesanan}`.toUpperCase();
-    const { ongkir } = ongkirData;
+    const ongkir = parseInt(ongkirData.ongkir, 10)
+      * Math.round(parseInt(barang.berat, 10) / PER_KILO);
     const newPesanan = {
       id: idPesanan,
       idAdmin: idJwt,
@@ -334,12 +339,14 @@ module.exports = {
     const idAdminGudang = gudang.user.id;
 
     if (idAdminGudang !== idJwt) {
-      res.status(403);
-      res.json({
-        status: 'error',
-        message: 'Anda tidak berhak mengakses gudang ini.',
-      });
-      return;
+      if (roleJwt !== 'super') {
+        res.status(403);
+        res.json({
+          status: 'error',
+          message: 'Anda tidak berhak mengakses gudang ini.',
+        });
+        return;
+      }
     }
 
     const kodeKota = await KodeKotaModel.findAll({
@@ -376,7 +383,8 @@ module.exports = {
 
     const idPesanan = resi.split('-')[2];
     const newResi = `${kodeKotaPengirim.kode}-${kodeKotaPenerima.kode}-${idPesanan}`.toUpperCase();
-    const ongkir = ongkirData.ongkir * barang.berat;
+    const ongkir = parseInt(ongkirData.ongkir, 10)
+      * Math.round(parseInt(barang.berat, 10) / PER_KILO);
     const newPesanan = {
       id: idPesanan,
       idAdmin: idJwt,

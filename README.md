@@ -10,25 +10,29 @@
 
 2. Login, mendapatkan access token (admin / kurir): `/login`
 
-   - access token berisi data akun: id, email
+   - access token berisi data akun: id, nama, role
 
-3. Menambah barang pengiriman (protected as admin): `/shipments`
+3. Menambah pesanan (protected as admin): `/orders`
 
-   - request body: nama, berat, pengirim, penerima
+   - request body: nama gudang, berat, pengirim, penerima
 
-4. Mengupdate lokasi gudang barang pengiriman (protected as admin) `/shipments/{resi}`
+4. Menambah pengiriman barang (protected as admin): `/shipments`
 
-   - request body: resi, id gudang
+   - request body: resi, nama gudang, keterangan
 
-5. Mengupdate status pengiriman (protected as kurir): `/shipments/{resi}`
+5. Mengupdate lokasi gudang pengiriman barang (protected as admin) `/shipments/gudang/{resi}`
+
+   - request body: resi, nama gudang, keterangan
+
+6. Mengupdate status pengiriman (protected as kurir): `/shipments/kurir/{resi}`
 
    - request body: resi, nama penerima, status pengiriman
 
-6. Mendapatkan detil barang pengiriman (public) `/shipments/{resi}`
+7. Mendapatkan detil pengiriman barang (public) `/shipments/{resi}`
 
    - request body: resi
 
-# Spek
+# Specs
 
 1. Registrasi akun
 
@@ -42,11 +46,11 @@
 
        ```json
        {
-         "nama": string,
-         "email": string,
-         "password": string,
-         "noHp": string,
-         "role": string,
+         "nama": "string",
+         "email": "string",
+         "password": "string",
+         "noHp": "string",
+         "role": "string"
        }
        ```
 
@@ -60,12 +64,12 @@
        {
          "status": "success",
          "data": {
-           "idUser": string,
-           "nama": string,
-           "email": string,
-           "password": string,
-           "noHp": string,
-           "role": string
+           "idUser": "string",
+           "nama": "string",
+           "email": "string",
+           "password": "string",
+           "noHp": "string",
+           "role": "string"
          }
        }
        ```
@@ -80,8 +84,8 @@
 
        ```json
        {
-         "email": string,
-         "password": string
+         "email": "string",
+         "password": "string"
        }
        ```
 
@@ -94,36 +98,37 @@
        {
          "status": "success",
          "data": {
-           "accessToken": string
+           "accessToken": "string"
          }
        }
        ```
 
-3. Menambah barang pengiriman
+3. Menambah pesanan pengiriman
 
    - Request:
 
-     - Path: `/shipments`
+     - Path: `/orders`
      - Method: `POST`
      - Body:
 
        ```json
        {
+         "namaGudang": "string",
          "barang": {
-           "nama": string,
-           "berat": number
+           "nama": "string",
+           "berat": "number"
          },
          "pengirim": {
-           "nama": string,
-           "alamat": string,
-           "kota": string,
-           "noHp": string
+           "nama": "string",
+           "alamat": "string",
+           "kota": "string",
+           "noHp": "string"
          },
          "penerima": {
-           "nama": string,
-           "alamat": string,
-           "kota": string,
-           "noHp": string
+           "nama": "string",
+           "alamat": "string",
+           "kota": "string",
+           "noHp": "string"
          }
        }
        ```
@@ -137,39 +142,77 @@
        {
          "status": "success",
          "data": {
-           "resi": string,
-           "ongkir": string,
+           "resi": "string",
+           "ongkir": "string",
+           "status": "string",
            "barang": {
-             "nama": string,
-             "berat": number
+             "nama": "string",
+             "berat": "number"
            },
            "pengirim": {
-             "nama": string,
-             "alamat": string,
-             "noHp": string
+             "nama": "string",
+             "alamat": "string",
+             "kota": "string",
+             "noHp": "string"
            },
            "penerima": {
-             "nama": string,
-             "alamat": string,
-             "noHp": string
+             "nama": "string",
+             "alamat": "string",
+             "kota": "string",
+             "noHp": "string"
            }
          }
        }
        ```
 
-4. Mengupdate lokasi gudang barang pengiriman
+4. Menambah pengiriman barang
+
+   - Request:
+
+     - Path: `/shipments`
+     - Method: `POST`
+     - Body:
+
+       ```json
+       {
+         "resi": "string",
+         "namaGudang": "string",
+         "keterangan": "string"
+       }
+       ```
+
+   - Response:
+
+     - Status: `201`
+     - Body:
+
+       ```json
+       {
+         "status": "success",
+         "data": {
+           "resi": "string",
+           "pengiriman": {
+             "keterangan": "string",
+             "waktu": "string"
+           }
+         }
+       }
+       ```
+
+5. Mengupdate lokasi gudang pengiriman barang
 
    Setiap perpindahan barang terdapat update lokasi pengiriman.
 
    - Request:
 
-     - Path: `/shipments/{resi}`
+     - Path: `/shipments/gudang/{resi}`
      - Method: `PUT`
      - Body:
 
        ```json
        {
-         "idGudang": string,
+         "namaGudang": "string",
+         "keterangan": "string"
        }
        ```
 
@@ -182,31 +225,30 @@
        {
          "status": "success",
          "data": {
-           "resi": string,
+           "resi": "string",
            "gudang": [
              {
-               "waktu": datetime,
-               "kurir": string
+               "waktu": "datetime",
+               "keterangan": "string"
              }
            ]
          }
        }
        ```
 
-5. Mengupdate status pengiriman
+6. Mengupdate status pengiriman
 
    Kurir dapat mengupdate status pengiriman
 
    - Request:
 
-     - Path: `/shipments/{resi}`
+     - Path: `/shipments/kurir/{resi}`
      - Method: `PUT`
      - Body:
 
        ```json
        {
-         "statusPengiriman": string,
-         "namaPenerima": string
+         "keterangan": "string"
        }
        ```
 
@@ -219,14 +261,14 @@
        {
          "status": "success",
          "data": {
-           "resi": string,
-           "statusPengiriman": string,
-           "namaPenerima": string
+           "resi": "string",
+           "keterangan": "string",
+           "waktu": "string"
          }
        }
        ```
 
-6. Mendapatkan detil barang pengiriman
+7. Mendapatkan detil pengiriman barang
 
    - Request:
 
@@ -242,11 +284,11 @@
        {
          "status": "success",
          "data": {
-           "resi": string,
+           "resi": "string",
            "lokasi": [
              {
-               "keterangan": string,
-               "waktu": datetime,
+               "keterangan": "string",
+               "waktu": "datetime",
              }
            ]
          }

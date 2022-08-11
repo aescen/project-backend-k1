@@ -29,15 +29,19 @@ const errorHandler = (err, req, res, next) => {
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
+
     await Models.RolesModel.sync({ alter: true });
     await Models.UsersModel.sync({ alter: true });
     await Models.KodeKotaModel.sync({ alter: true });
     await Models.GudangModel.sync({ alter: true });
-    await Models.BarangModel.sync({ alter: true });
+    await Models.PesananModel.sync({ alter: true });
     await Models.PengirimanModel.sync({ alter: true });
+    await Models.OngkirModel.sync({ alter: true });
     console.log('DB setup done.');
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error(error);
+    console.error('Unable to connect to the database.');
+    process.exit(-1);
   }
 })();
 

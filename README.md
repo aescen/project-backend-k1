@@ -1,6 +1,6 @@
 # Project Backend Kelompok 1: Aplikasi Kurir
 
-# Fitur
+## Fitur
 
 1. Registrasi akun (superuser): `/users`
 
@@ -32,7 +32,7 @@
 
    - request body: resi
 
-# Specs
+## Specs
 
 1. Registrasi akun
 

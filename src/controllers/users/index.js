@@ -212,6 +212,7 @@ module.exports = {
     }
 
     res.json({
+      status: 'success',
       message: 'Berhasil merubah data user.',
     });
   },
@@ -244,6 +245,7 @@ module.exports = {
     }
 
     res.json({
+      status: 'success',
       message: 'Berhasil menghapus user.',
     });
   },

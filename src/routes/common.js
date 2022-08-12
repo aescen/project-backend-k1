@@ -6,6 +6,7 @@ const verifyJWT = (req, res, next) => {
   if (!authorization) {
     res.status(400);
     res.json({
+      status: 'error',
       message: 'Gagal memuat data. Token tidak ada',
     });
     return;
@@ -23,6 +24,7 @@ const verifyJWT = (req, res, next) => {
 
   res.status(401);
   res.json({
+    status: 'error',
     message: 'Gagal memuat data. Token anda tidak valid.',
   });
 };

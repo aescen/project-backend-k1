@@ -17,6 +17,7 @@ routes.get('/', (req, res) => {
 
   if (mType === 'application/json') {
     res.json({
+      status: 'success',
       title: 'AIA Kargo Express',
       message: 'AIA Kargo Express',
     });

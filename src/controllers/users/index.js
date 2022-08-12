@@ -109,7 +109,10 @@ module.exports = {
       role: item.role.role,
     }));
 
-    res.json(mappedUsers);
+    res.json({
+      status: 'success',
+      data: mappedUsers,
+    });
   },
   getUserById: async (req, res) => {
     const { role } = req.jwt.decoded;
@@ -143,7 +146,10 @@ module.exports = {
       return;
     }
 
-    res.json(userFound);
+    res.json({
+      status: 'success',
+      user: userFound,
+    });
   },
   updateUserById: async (req, res) => {
     const { role: roleJwt } = req.jwt.decoded;

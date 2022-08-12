@@ -48,6 +48,7 @@ module.exports = {
     });
 
     res.json({
+      status: 'success',
       accessToken,
     });
   },

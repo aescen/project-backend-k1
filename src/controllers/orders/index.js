@@ -423,6 +423,7 @@ module.exports = {
     }
 
     res.json({
+      status: 'success',
       message: 'Berhasil merubah data pesanan.',
     });
   },
@@ -481,6 +482,7 @@ module.exports = {
     }
 
     res.json({
+      status: 'success',
       message: 'Berhasil menghapus pesanan.',
     });
   },

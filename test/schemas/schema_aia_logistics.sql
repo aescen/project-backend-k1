@@ -3,9 +3,11 @@
 -- Model: New Model    Version: 1.0
 -- MySQL Workbench Forward Engineering
 
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
 
 -- -----------------------------------------------------
 -- Schema mydb
@@ -14,11 +16,68 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- Schema aia_logistics
 -- -----------------------------------------------------
 
+
 -- -----------------------------------------------------
 -- Schema aia_logistics
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `aia_logistics` DEFAULT CHARACTER SET utf8mb4 ;
 USE `aia_logistics` ;
+
+
+-- -----------------------------------------------------
+-- Table `aia_logistics`.`roles`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `aia_logistics`.`roles` ;
+
+CREATE TABLE IF NOT EXISTS `aia_logistics`.`roles` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `role` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `roles_role` (`role` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8mb4;
+
+
+-- -----------------------------------------------------
+-- Table `aia_logistics`.`users`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `aia_logistics`.`users` ;
+
+CREATE TABLE IF NOT EXISTS `aia_logistics`.`users` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nama` VARCHAR(64) NOT NULL,
+  `email` VARCHAR(64) NOT NULL,
+  `password` TEXT NOT NULL,
+  `no_hp` VARCHAR(64) NOT NULL,
+  `id_role` INT(10) UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `users_email` (`email` ASC) VISIBLE,
+  INDEX `id_role` (`id_role` ASC) VISIBLE,
+  CONSTRAINT `users_ibfk_1`
+    FOREIGN KEY (`id_role`)
+    REFERENCES `aia_logistics`.`roles` (`id`)
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 14
+DEFAULT CHARACTER SET = utf8mb4;
+
+
+-- -----------------------------------------------------
+-- Table `aia_logistics`.`kode_kota`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `aia_logistics`.`kode_kota` ;
+
+CREATE TABLE IF NOT EXISTS `aia_logistics`.`kode_kota` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `kode` VARCHAR(64) NOT NULL,
+  `nama` VARCHAR(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `kode_kota_kode` (`kode` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8mb4;
+
 
 -- -----------------------------------------------------
 -- Table `aia_logistics`.`gudang`
@@ -42,22 +101,6 @@ CREATE TABLE IF NOT EXISTS `aia_logistics`.`gudang` (
     FOREIGN KEY (`id_kode_kota`)
     REFERENCES `aia_logistics`.`kode_kota` (`id`)
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 3
-DEFAULT CHARACTER SET = utf8mb4;
-
-
--- -----------------------------------------------------
--- Table `aia_logistics`.`kode_kota`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `aia_logistics`.`kode_kota` ;
-
-CREATE TABLE IF NOT EXISTS `aia_logistics`.`kode_kota` (
-  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `kode` VARCHAR(64) NOT NULL,
-  `nama` VARCHAR(64) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `kode_kota_kode` (`kode` ASC) VISIBLE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8mb4;
@@ -99,40 +142,6 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `aia_logistics`.`pengiriman`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `aia_logistics`.`pengiriman` ;
-
-CREATE TABLE IF NOT EXISTS `aia_logistics`.`pengiriman` (
-  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_pesanan` VARCHAR(64) NOT NULL,
-  `id_gudang` INT(10) UNSIGNED NOT NULL,
-  `keterangan` VARCHAR(255) NOT NULL,
-  `waktu` DATETIME NOT NULL,
-  `id_kurir` INT(10) UNSIGNED NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `id_pesanan` (`id_pesanan` ASC) VISIBLE,
-  INDEX `id_gudang` (`id_gudang` ASC) VISIBLE,
-  INDEX `id_kurir` (`id_kurir` ASC) VISIBLE,
-  CONSTRAINT `pengiriman_ibfk_518`
-    FOREIGN KEY (`id_pesanan`)
-    REFERENCES `aia_logistics`.`pesanan` (`id`)
-    ON UPDATE CASCADE,
-  CONSTRAINT `pengiriman_ibfk_519`
-    FOREIGN KEY (`id_gudang`)
-    REFERENCES `aia_logistics`.`gudang` (`id`)
-    ON UPDATE CASCADE,
-  CONSTRAINT `pengiriman_ibfk_520`
-    FOREIGN KEY (`id_kurir`)
-    REFERENCES `aia_logistics`.`users` (`id`)
-    ON DELETE SET NULL
-    ON UPDATE SET NULL)
-ENGINE = InnoDB
-AUTO_INCREMENT = 30
-DEFAULT CHARACTER SET = utf8mb4;
-
-
--- -----------------------------------------------------
 -- Table `aia_logistics`.`pesanan`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `aia_logistics`.`pesanan` ;
@@ -165,41 +174,36 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `aia_logistics`.`roles`
+-- Table `aia_logistics`.`pengiriman`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `aia_logistics`.`roles` ;
+DROP TABLE IF EXISTS `aia_logistics`.`pengiriman` ;
 
-CREATE TABLE IF NOT EXISTS `aia_logistics`.`roles` (
+CREATE TABLE IF NOT EXISTS `aia_logistics`.`pengiriman` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `role` VARCHAR(255) NOT NULL,
+  `id_pesanan` VARCHAR(64) NOT NULL,
+  `id_gudang` INT(10) UNSIGNED NOT NULL,
+  `keterangan` VARCHAR(255) NOT NULL,
+  `waktu` DATETIME NOT NULL,
+  `id_kurir` INT(10) UNSIGNED NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `roles_role` (`role` ASC) VISIBLE)
+  INDEX `id_pesanan` (`id_pesanan` ASC) VISIBLE,
+  INDEX `id_gudang` (`id_gudang` ASC) VISIBLE,
+  INDEX `id_kurir` (`id_kurir` ASC) VISIBLE,
+  CONSTRAINT `pengiriman_ibfk_518`
+    FOREIGN KEY (`id_pesanan`)
+    REFERENCES `aia_logistics`.`pesanan` (`id`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `pengiriman_ibfk_519`
+    FOREIGN KEY (`id_gudang`)
+    REFERENCES `aia_logistics`.`gudang` (`id`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `pengiriman_ibfk_520`
+    FOREIGN KEY (`id_kurir`)
+    REFERENCES `aia_logistics`.`users` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE SET NULL)
 ENGINE = InnoDB
-AUTO_INCREMENT = 4
-DEFAULT CHARACTER SET = utf8mb4;
-
-
--- -----------------------------------------------------
--- Table `aia_logistics`.`users`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `aia_logistics`.`users` ;
-
-CREATE TABLE IF NOT EXISTS `aia_logistics`.`users` (
-  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `nama` VARCHAR(64) NOT NULL,
-  `email` VARCHAR(64) NOT NULL,
-  `password` TEXT NOT NULL,
-  `no_hp` VARCHAR(64) NOT NULL,
-  `id_role` INT(10) UNSIGNED NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `users_email` (`email` ASC) VISIBLE,
-  INDEX `id_role` (`id_role` ASC) VISIBLE,
-  CONSTRAINT `users_ibfk_1`
-    FOREIGN KEY (`id_role`)
-    REFERENCES `aia_logistics`.`roles` (`id`)
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 14
+AUTO_INCREMENT = 30
 DEFAULT CHARACTER SET = utf8mb4;
 
 

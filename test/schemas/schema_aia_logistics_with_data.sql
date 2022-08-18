@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 11, 2022 at 08:27 AM
+-- Generation Time: Aug 12, 2022 at 07:58 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.7
 
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `pengiriman` (
   KEY `id_pesanan` (`id_pesanan`),
   KEY `id_gudang` (`id_gudang`),
   KEY `id_kurir` (`id_kurir`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `pengiriman`
@@ -130,7 +130,12 @@ INSERT INTO `pengiriman` (`id`, `id_pesanan`, `id_gudang`, `keterangan`, `waktu`
 (21, 'U4V70BFUWTL0', 2, 'Paket keluar dari Surabaya [AIA SUB]', '2022-08-11 06:20:54', NULL),
 (22, 'U4V70BFUWTL0', 1, 'Paket telah diterima di Jakarta [AIA JKTA]', '2022-08-11 06:22:52', NULL),
 (23, 'U4V70BFUWTL0', 1, 'Paket dibawa [AIA JKTA - Fiki]', '2022-08-11 06:26:08', 4),
-(24, 'U4V70BFUWTL0', 1, 'Paket diterima oleh Alex', '2022-08-11 06:26:17', 4);
+(24, 'U4V70BFUWTL0', 1, 'Paket diterima oleh Alex', '2022-08-11 06:26:17', 4),
+(25, 'I100RKMK1LJ7', 2, 'Paket telah diinput di Surabaya (manifested)  [AIA SUB]', '2022-08-11 09:38:23', NULL),
+(26, 'I100RKMK1LJ7', 2, 'Paket keluar dari Surabaya [AIA SUB]', '2022-08-11 09:40:41', NULL),
+(27, 'I100RKMK1LJ7', 1, 'Paket telah diterima di Jakarta [AIA JKTA]', '2022-08-11 09:43:00', NULL),
+(28, 'I100RKMK1LJ7', 1, 'Paket dibawa [AIA JKTA - Fiki]', '2022-08-11 09:45:57', 4),
+(29, 'I100RKMK1LJ7', 1, 'Paket diterima oleh Aisyah', '2022-08-11 09:47:11', 4);
 
 -- --------------------------------------------------------
 
@@ -165,7 +170,8 @@ CREATE TABLE IF NOT EXISTS `pesanan` (
 
 INSERT INTO `pesanan` (`id`, `id_admin`, `resi`, `nama_barang`, `nama_pengirim`, `nama_penerima`, `alamat_pengirim`, `alamat_penerima`, `no_hp_pengirim`, `no_hp_penerima`, `berat`, `ongkir`, `status`, `created_at`, `updated_at`) VALUES
 ('123QWEASDZXC', 2, 'JKTA-SUB-123QWEASDZXC', 'Barang Ex', 'Sander', 'Rere', 'Jalan Karta 1, Jakarta', 'Jalan Baya 1, Surabaya', '123456789', '123456789', 10, 100000, 'Terkirim', '2022-08-09 12:00:00', '2022-08-09 12:00:00'),
-('U4V70BFUWTL0 ', 2, 'SUB-JKTA-U4V70BFUWTL0 ', 'Sepeda', 'Susan', 'Alex', 'Jl. Kapibara, Surabaya', '9876543210', '9876543210', '9876543210', 35, 4375000, 'Diproses', '2022-08-11 05:43:50', '2022-08-11 06:15:46');
+('I100RKMK1LJ7', 3, 'SUB-JKTA-I100RKMK1LJ7', 'Mainan', 'Tiwi', 'Aisya', 'Jl. Segar, Surabaya', '9876543210', '9876543210', '9876543210', 20, 500000, 'Terkirim', '2022-08-11 09:35:02', '2022-08-11 09:47:11'),
+('U4V70BFUWTL0 ', 2, 'SUB-JKTA-U4V70BFUWTL0 ', 'Sepeda', 'Susan', 'Alex', 'Jl. Kapibara, Surabaya', '9876543210', '9876543210', '9876543210', 35, 437500, 'Diproses', '2022-08-11 05:43:50', '2022-08-11 06:15:46');
 
 -- --------------------------------------------------------
 
@@ -205,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email` (`email`),
   KEY `id_role` (`id_role`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
@@ -226,24 +232,24 @@ INSERT INTO `users` (`id`, `nama`, `email`, `password`, `no_hp`, `id_role`) VALU
 -- Constraints for table `gudang`
 --
 ALTER TABLE `gudang`
-  ADD CONSTRAINT `gudang_ibfk_329` FOREIGN KEY (`id_admin`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `gudang_ibfk_330` FOREIGN KEY (`id_kode_kota`) REFERENCES `kode_kota` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `gudang_ibfk_379` FOREIGN KEY (`id_admin`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `gudang_ibfk_380` FOREIGN KEY (`id_kode_kota`) REFERENCES `kode_kota` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `ongkir`
 --
 ALTER TABLE `ongkir`
-  ADD CONSTRAINT `ongkir_ibfk_379` FOREIGN KEY (`kota_pengirim`) REFERENCES `kode_kota` (`kode`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `ongkir_ibfk_380` FOREIGN KEY (`kota_penerima`) REFERENCES `kode_kota` (`kode`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `ongkir_ibfk_381` FOREIGN KEY (`kode`) REFERENCES `kode_kota` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `ongkir_ibfk_448` FOREIGN KEY (`kota_pengirim`) REFERENCES `kode_kota` (`kode`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `ongkir_ibfk_449` FOREIGN KEY (`kota_penerima`) REFERENCES `kode_kota` (`kode`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `ongkir_ibfk_450` FOREIGN KEY (`kode`) REFERENCES `kode_kota` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `pengiriman`
 --
 ALTER TABLE `pengiriman`
-  ADD CONSTRAINT `pengiriman_ibfk_458` FOREIGN KEY (`id_pesanan`) REFERENCES `pesanan` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `pengiriman_ibfk_459` FOREIGN KEY (`id_gudang`) REFERENCES `gudang` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `pengiriman_ibfk_460` FOREIGN KEY (`id_kurir`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL;
+  ADD CONSTRAINT `pengiriman_ibfk_530` FOREIGN KEY (`id_pesanan`) REFERENCES `pesanan` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `pengiriman_ibfk_531` FOREIGN KEY (`id_gudang`) REFERENCES `gudang` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `pengiriman_ibfk_532` FOREIGN KEY (`id_kurir`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 --
 -- Constraints for table `pesanan`

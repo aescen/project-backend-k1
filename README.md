@@ -1,4 +1,4 @@
-# Project Backend Kelompok 1: Aplikasi Kurir
+# Project Backend Kelompok 1: Aplikasi Kurir AIA Kargo Express
 
 ## Fitur
 
@@ -297,7 +297,10 @@
 
 ### Test Collection
 
-- Thunder Client (VSCode): [AIA Logistics API](./test/AIALogisticsAPI.json 'AIALogisticsAPI')
+- Postman:
+  - Collection: [AIA Kargo Express API](./test/AIA_Logistics_API.postman_collection.json 'AIALogisticsAPI')
+  - Environment: [AIA Kargo Express API](./test/AIA_Logistics_API.postman_environment.json 'AIALogisticsAPIEnv')
+- Thunder Client (VSCode): [AIA Kargo Express API](./test/AIALogisticsAPI.json 'AIALogisticsAPI')
 
 ### Link Deploy
 

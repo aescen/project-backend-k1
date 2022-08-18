@@ -1,0 +1,1028 @@
+{
+	"info": {
+		"_postman_id": "9cec89e9-6a3c-419e-9877-e37969f0f22f",
+		"name": "AIA Logistics API",
+		"description": "StartFragment\n\n# Project Backend Kelompok 1: Aplikasi Kurir\n\n## Fitur\n\n1.  Registrasi akun (superuser): `/users`\n    1.  Menambah akun admin gudang\n    2.  Menambah akun kurir\n    3.  request body: nama, email, password, no hp, role\n2.  Login, mendapatkan access token (admin / kurir): `/login`\n    1.  access token berisi data akun: id, nama, role\n3.  Menambah pesanan (protected as admin): `/orders`\n    1.  request body: nama gudang, berat, pengirim, penerima\n4.  Menambah pengiriman barang (protected as admin): `/shipments`\n    1.  request body: resi, nama gudang, keterangan\n5.  Mengupdate lokasi gudang pengiriman barang (protected as admin) `/shipments/gudang/{resi}`\n    1.  request body: resi, nama gudang, keterangan\n6.  Mengupdate status pengiriman (protected as kurir): `/shipments/kurir/{resi}`\n    1.  request body: resi, nama penerima, status pengiriman\n7.  Mendapatkan detil pengiriman barang (public) `/shipments/{resi}`\n    1.  request body: resi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15790042"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login User Invalid Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain accessToken', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"aialogistics@aia.com\",\r\n    \"password\": \"AIALOGISTICS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User Super",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain accessToken', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('accessToken');\r",
+									"    pm.environment.set('accessTokenSuper', responseJson.accessToken);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"aialogistics@aia.com\",\r\n    \"password\": \"AIALOGISTICS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User Admin JKT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain accessToken', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('accessToken');\r",
+									"    pm.environment.set('accessTokenAdminJKT', responseJson.accessToken);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"admin.jkt@aia.com\",\r\n    \"password\": \"adminJKT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User Admin SUB",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain accessToken', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('accessToken');\r",
+									"    pm.environment.set('accessTokenAdminSBY', responseJson.accessToken);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"admin.sby@aia.com\",\r\n    \"password\": \"adminSBY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User Kurir 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain accessToken', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('accessToken');\r",
+									"    pm.environment.set('accessTokenKurir1', responseJson.accessToken);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"fiki@aia.com\",\r\n    \"password\": \"fiki123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User Kurir 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain accessToken', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('accessToken');\r",
+									"    pm.environment.set('accessTokenKurir2', responseJson.accessToken);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"arivin@aia.com\",\r\n    \"password\": \"arivin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test token",
+			"item": [
+				{
+					"name": "No token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain error message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equal('error');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain user data', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenSuper}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain accessToken', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenSuper}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"aialogistics@aia.com\",\r\n    \"password\": \"AIALOGISTICS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Users Without Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain status error', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nama\": \"Babe\",\r\n    \"email\": \"babe@aia.com\",\r\n    \"password\": \"123456789\",\r\n    \"noHp\": \"123456789\",\r\n    \"role\": \"kurir\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Users With Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain access token', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenSuper}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nama\": \"Babe\",\r\n    \"email\": \"babe@aia.com\",\r\n    \"password\": \"babe123\",\r\n    \"noHp\": \"123456789\",\r\n    \"role\": \"kurir\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Add Pesanan",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain added orders', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdminSBY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"namaGudang\": \"AIA SUB\",\r\n \"barang\": {\r\n   \"nama\": \"Mainan\",\r\n   \"berat\": 20\r\n },\r\n \"pengirim\": {\r\n   \"nama\": \"Tiwi\",\r\n   \"alamat\": \"Jl. Segar, Surabaya\",\r\n   \"kota\": \"Surabaya\",\r\n   \"noHp\": \"9876543210\"\r\n },\r\n \"penerima\": {\r\n   \"nama\": \"Aisya\",\r\n   \"alamat\": \"Jl. Diponegoro, Jakarta\",\r\n   \"kota\": \"Jakarta\",\r\n   \"noHp\": \"9876543210\"\r\n }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/orders",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shipments",
+			"item": [
+				{
+					"name": "Get Detail Pengiriman Barang By Resi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain added orders', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/shipments/SUB-JKTA-0DZLD60LOMW8",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"shipments",
+								"SUB-JKTA-0DZLD60LOMW8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Pesanan Input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain added orders', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdminSBY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"resi\": \"SUB-JKTA-0DZLD60LOMW8\",\r\n    \"namaGudang\": \"AIA SUB\",\r\n    \"keterangan\": \"Paket telah diinput di Surabaya (manifested)  [AIA SUB]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/shipments/",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"shipments",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Pesanan Keluar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain added orders', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdminSBY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"namaGudang\": \"AIA SUB\",\r\n    \"keterangan\": \"Paket keluar dari Surabaya [AIA SUB]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/shipments/gudang/SUB-JKTA-0DZLD60LOMW8",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"shipments",
+								"gudang",
+								"SUB-JKTA-0DZLD60LOMW8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Pesanan Masuk",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain added orders', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdminJKT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"namaGudang\": \"AIA JKTA\",\r\n    \"keterangan\": \"Paket telah diterima di Jakarta [AIA JKTA]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/shipments/gudang/SUB-JKTA-0DZLD60LOMW8",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"shipments",
+								"gudang",
+								"SUB-JKTA-0DZLD60LOMW8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Pesanan Kurir Ambil",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain added orders', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenKurir1}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"keterangan\": \"Paket dibawa [AIA JKTA - Fiki]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/shipments/kurir/SUB-JKTA-0DZLD60LOMW8",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"shipments",
+								"kurir",
+								"SUB-JKTA-0DZLD60LOMW8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Pesanan Kurir Terkirim",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain added orders', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenKurir1}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"keterangan\": \"Paket diterima oleh Aisyah\",\r\n    \"status\": \"Terkirim\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/shipments/kurir/SUB-JKTA-0DZLD60LOMW8",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"shipments",
+								"kurir",
+								"SUB-JKTA-0DZLD60LOMW8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
